@@ -32,7 +32,22 @@
           </li>
         </ul>
       </div>
-      <Results v-if="!questions[currentQuestion]" />
+      <div v-if="!questions[currentQuestion]">
+        <Results
+          v-bind:test="{
+            questions,
+            answers,
+            dateTaken: new Date()
+          }"
+        />
+        <router-link to="/test" class="button-link">
+          <a v-on:click="resetItAll">Practice Again</a>
+        </router-link>
+        |
+        <router-link to="/" class="button-link">
+          <a v-on:click="resetItAll">Home</a>
+        </router-link>
+      </div>
     </div>
     <section
       v-if="!questionChecked && questions[currentQuestion]"
@@ -78,9 +93,9 @@ export default {
     Results
   },
   computed: mapState({
-    currentQuestion: state => state.currentQuestion,
-    questions: state => state.questions,
-    answers: state => state.answers
+    currentQuestion: state => state.currentTest.currentQuestion,
+    questions: state => state.currentTest.questions,
+    answers: state => state.currentTest.answers
   }),
   mounted() {
     window.addEventListener("keypress", e => {
@@ -102,13 +117,27 @@ export default {
     });
   },
   methods: {
-    ...mapActions(["recordAnswer"]),
+    ...mapActions(["recordAnswer", "newTest", "resetCurrentQuestion"]),
+    resetItAll() {
+      this.newTest();
+      this.resetCurrentQuestion();
+      this.questionCorrect = null;
+      this.questionChecked = null;
+      this.currentAnswer = null;
+    },
     nextQuestion() {
       if (this.currentAnswer != null) {
         this.$store.dispatch("nextQuestion");
         this.questionCorrect = null;
         this.questionChecked = null;
         this.currentAnswer = null;
+
+        if (this.currentQuestion >= this.questions.length) {
+          this.$store.dispatch("storeTest", {
+            questions: this.questions,
+            answers: this.answers
+          });
+        }
       }
     },
     checkQuestion() {
