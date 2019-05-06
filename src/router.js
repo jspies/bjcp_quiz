@@ -28,6 +28,12 @@ export default new Router({
         import(/* webpackChunkName: "tests" */ "./views/Tests.vue")
     },
     {
+      path: "/results",
+      name: "currentResults",
+      component: () =>
+        import(/* webpackChunkName: "results" */ "./views/Results.vue")
+    },
+    {
       path: "/results/:testId",
       name: "results",
       component: () =>

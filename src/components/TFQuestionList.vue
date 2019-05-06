@@ -1,5 +1,8 @@
 <template>
   <div class="question-list">
+    <div class="progress">
+      {{ currentQuestion + 1 }} out of {{ questions.length }}
+    </div>
     <div class="question-view">
       <div v-if="questions[currentQuestion]">
         <div class="question">
@@ -13,6 +16,7 @@
                 name="questionAnswer"
                 type="radio"
                 value="true"
+                :disabled="questionChecked"
                 v-model="currentAnswer"
               />
               <span>True</span>
@@ -25,6 +29,7 @@
                 name="questionAnswer"
                 type="radio"
                 value="false"
+                :disabled="questionChecked"
                 v-model="currentAnswer"
               />
               <span>False</span>
@@ -32,53 +37,54 @@
           </li>
         </ul>
       </div>
-      <div v-if="!questions[currentQuestion]">
-        <Results
-          v-bind:test="{
-            questions,
-            answers,
-            dateTaken: new Date()
-          }"
-        />
-        <router-link to="/test" class="button-link">
-          <a v-on:click="resetItAll">Practice Again</a>
-        </router-link>
-        |
-        <router-link to="/" class="button-link">
-          <a v-on:click="resetItAll">Home</a>
-        </router-link>
-      </div>
     </div>
     <section
-      v-if="!questionChecked && questions[currentQuestion]"
-      class="status-section neutral-status"
+      v-if="questions[currentQuestion]"
+      class="status-section"
+      v-bind:class="{
+        'neutral-status': !questionChecked && questions[currentQuestion],
+        'correct-status':
+          questionCorrect === true && questions[currentQuestion],
+        'incorrect-status':
+          questionChecked && !questionCorrect && questions[currentQuestion]
+      }"
     >
-      <button :disabled="currentAnswer == null" v-on:click="checkQuestion">
-        Check
-      </button>
-    </section>
-    <section
-      v-if="questionCorrect === true && questions[currentQuestion]"
-      class="status-section correct-status"
-    >
-      <button :disabled="currentAnswer == null" v-on:click="nextQuestion">
-        Continue
-      </button>
-    </section>
-    <section
-      v-if="questionCorrect === false && questions[currentQuestion]"
-      class="status-section incorrect-status"
-    >
-      <button :disabled="currentAnswer == null" v-on:click="nextQuestion">
-        Continue
-      </button>
+      <div class="content">
+        <div class="answer-message">
+          <span v-if="questionChecked && questionCorrect">
+            Correct
+          </span>
+          <div
+            class="answer-message-incorrect"
+            v-if="questionChecked && !questionCorrect"
+          >
+            Incorrect
+            <div>Answer is: {{ questions[currentQuestion].answer }}</div>
+          </div>
+        </div>
+        <button
+          v-if="!questionChecked"
+          class="next-button check-button"
+          :disabled="currentAnswer == null"
+          v-on:click="checkQuestion"
+        >
+          Check
+        </button>
+        <button
+          v-if="questionChecked"
+          class="next-button"
+          :disabled="currentAnswer == null"
+          v-on:click="nextQuestion"
+        >
+          Continue
+        </button>
+      </div>
     </section>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
-import Results from "@/components/Results.vue";
 
 export default {
   name: "tfquestionlist",
@@ -88,9 +94,6 @@ export default {
       currentAnswer: null,
       questionChecked: false
     };
-  },
-  components: {
-    Results
   },
   computed: mapState({
     currentQuestion: state => state.currentTest.currentQuestion,
@@ -117,14 +120,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions(["recordAnswer", "newTest", "resetCurrentQuestion"]),
-    resetItAll() {
-      this.newTest();
-      this.resetCurrentQuestion();
-      this.questionCorrect = null;
-      this.questionChecked = null;
-      this.currentAnswer = null;
-    },
+    ...mapActions(["recordAnswer"]),
     nextQuestion() {
       if (this.currentAnswer != null) {
         this.$store.dispatch("nextQuestion");
@@ -132,11 +128,13 @@ export default {
         this.questionChecked = null;
         this.currentAnswer = null;
 
+        // end of test
         if (this.currentQuestion >= this.questions.length) {
           this.$store.dispatch("storeTest", {
             questions: this.questions,
             answers: this.answers
           });
+          this.$router.push("/results");
         }
       }
     },
@@ -173,12 +171,14 @@ export default {
   overflow: hidden;
   background: #fff;
   margin: 0;
-  max-height: 140px;
+  height: 80px;
   position: fixed;
   bottom: 0;
   width: 100%;
 }
-
+.progress {
+  margin: 40px 0 20px 0;
+}
 .status-section button {
   display: inline-block;
   line-height: 20px;
@@ -192,23 +192,51 @@ export default {
   border: 0;
   font-weight: 500;
 }
-
+.status-section .content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.status-section .answer-message {
+  font-size: 2em;
+  float: left;
+  text-align: left;
+}
+.status-section .answer-message-incorrect {
+  position: relative;
+}
+.status-section div.answer-message-incorrect div {
+  position: relative;
+  top: -10px;
+  font-size: 0.8em;
+}
 .status-section button:disabled {
   color: #b5b5b5;
   background: #d5d5d5;
 }
-
+.next-button {
+  float: right;
+}
 .correct-status {
   background: #b8f28b;
+  color: #489700;
 }
 .correct-status button {
   background: #58a700;
 }
 .incorrect-status {
   background: #e47d8e;
+  color: #a6101a;
 }
 .incorrect-status button {
   background: #e6202a;
+}
+.question {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: left;
+}
+.question-list {
+  text-align: center;
 }
 ul.answer-choices {
   list-style: none;

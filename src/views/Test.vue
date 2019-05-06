@@ -1,7 +1,5 @@
 <template>
   <div class="about">
-    <h1>Process Test</h1>
-
     <TFQuestionList />
   </div>
 </template>
@@ -15,7 +13,7 @@ export default {
     TFQuestionList
   },
   created() {
-    this.$store.dispatch("fetchQuestions");
+    this.$store.dispatch("initTest");
   }
 };
 </script>

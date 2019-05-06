@@ -1,5 +1,6 @@
 <template>
   <div class="test-options">
+    <h3>Practice</h3>
     <ul class="main-page-list">
       <li>
         <router-link to="/tests">
@@ -8,7 +9,7 @@
       </li>
       <li>
         <router-link to="/test">
-          <a>Start Process Test</a>
+          <a>Start BJCP Process Test</a>
         </router-link>
       </li>
       <li>Start Style Test</li>
@@ -18,7 +19,7 @@
 
 <script>
 export default {
-  name: "StartTest",
+  name: "Practice",
   props: {}
 };
 </script>
@@ -33,6 +34,7 @@ export default {
   border-radius: 5px;
   float: left;
   margin-right: 40px;
+  background: #fff;
   font-size: 1.2em;
 }
 .main-page-list li a {

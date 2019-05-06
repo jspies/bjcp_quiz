@@ -1,9 +1,13 @@
 <template>
   <div class="results-page">
-    <Results v-bind:test="tests.tests[$route.params.testId]" />
-    <router-link :to="{ name: 'tests' }">
-      <a>Back to Tests</a>
-    </router-link>
+    <Results v-bind:test="lastLocalTest" />
+    <div v-if="$route.params.testId">
+      <Results v-bind:test="tests.tests[$route.params.testId]" />
+
+      <router-link :to="{ name: 'tests' }">
+        <a>Back to Tests</a>
+      </router-link>
+    </div>
   </div>
 </template>
 
@@ -15,10 +19,10 @@ export default {
   name: "results-page",
   components: { Results },
   computed: {
-    ...mapState(["tests"]),
-    ...mapGetters(["latestTest"])
+    ...mapState(["tests", "lastTest"]),
+    ...mapGetters(["latestTest", "lastLocalTest"])
   },
-  mounted() {
+  created() {
     this.$store.dispatch("initTests");
   }
 };

@@ -1,8 +1,14 @@
+const LAST_TEST_KEY = "currentTest.lastTest";
+
 export default {
   state: {
-    tests: []
+    tests: [],
+    lastTest: {}
   },
   getters: {
+    lastLocalTest: state => {
+      return state.lastTest;
+    },
     latestTest: state => {
       return state.tests.sort(function(a, b) {
         return a.dateTaken > b.dateTaken;
@@ -15,28 +21,22 @@ export default {
     }
   },
   mutations: {
-    STORE_TEST(_, test) {
-      let tests = localStorage.getItem("tests");
-      if (tests) {
-        tests = JSON.parse(tests);
-      } else {
-        tests = [];
-      }
-      tests.push(test);
-      localStorage.setItem("tests", JSON.stringify(tests));
-    },
     INIT_TESTS(state) {
-      const tests = localStorage.getItem("tests") || [];
-      state.tests = JSON.parse(tests);
+      const lastTest = localStorage.getItem(LAST_TEST_KEY);
+      if (lastTest) {
+        state.lastTest = JSON.parse(lastTest);
+      }
+      const tests = localStorage.getItem("tests");
+      if (tests) {
+        state.tests = JSON.parse(tests);
+      } else {
+        state.tests = [];
+      }
     }
   },
   actions: {
     initTests(context) {
       context.commit("INIT_TESTS");
-    },
-    storeTest(context, test) {
-      test.dateTaken = new Date();
-      context.commit("STORE_TEST", test);
     }
   }
 };
