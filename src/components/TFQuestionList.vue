@@ -1,84 +1,89 @@
 <template>
   <div class="question-list">
-    <div class="progress">
-      {{ currentQuestion + 1 }} out of {{ questions.length }}
+    <div class="loading" v-if="questions.length <= 0">
+      Loading
     </div>
-    <div class="question-view">
-      <div v-if="questions[currentQuestion]">
-        <div class="question">
-          {{ questions[currentQuestion].question }}
-        </div>
-        <ul class="answer-choices">
-          <li class="answer">
-            <label for="questionAnswer1">
-              <input
-                id="questionAnswer1"
-                name="questionAnswer"
-                type="radio"
-                value="true"
-                :disabled="questionChecked"
-                v-model="currentAnswer"
-              />
-              <span>True</span>
-            </label>
-          </li>
-          <li class="answer">
-            <label for="questionAnswer2">
-              <input
-                id="questionAnswer2"
-                name="questionAnswer"
-                type="radio"
-                value="false"
-                :disabled="questionChecked"
-                v-model="currentAnswer"
-              />
-              <span>False</span>
-            </label>
-          </li>
-        </ul>
+    <section v-if="questions.length > 0">
+      <div class="progress">
+        {{ currentQuestion + 1 }} out of {{ questions.length }}
       </div>
-    </div>
-    <section
-      v-if="questions[currentQuestion]"
-      class="status-section"
-      v-bind:class="{
-        'neutral-status': !questionChecked && questions[currentQuestion],
-        'correct-status':
-          questionCorrect === true && questions[currentQuestion],
-        'incorrect-status':
-          questionChecked && !questionCorrect && questions[currentQuestion]
-      }"
-    >
-      <div class="content">
-        <div class="answer-message">
-          <span v-if="questionChecked && questionCorrect">
-            Correct
-          </span>
-          <div
-            class="answer-message-incorrect"
-            v-if="questionChecked && !questionCorrect"
-          >
-            Incorrect
-            <div>Answer is: {{ questions[currentQuestion].answer }}</div>
+      <section>
+        <div v-if="questions[currentQuestion]">
+          <div class="question">
+            {{ questions[currentQuestion].question }}
           </div>
+          <ul class="answer-choices">
+            <li class="answer">
+              <label for="questionAnswer1">
+                <input
+                  id="questionAnswer1"
+                  name="questionAnswer"
+                  type="radio"
+                  value="true"
+                  :disabled="questionChecked"
+                  v-model="currentAnswer"
+                />
+                <span>True</span>
+              </label>
+            </li>
+            <li class="answer">
+              <label for="questionAnswer2">
+                <input
+                  id="questionAnswer2"
+                  name="questionAnswer"
+                  type="radio"
+                  value="false"
+                  :disabled="questionChecked"
+                  v-model="currentAnswer"
+                />
+                <span>False</span>
+              </label>
+            </li>
+          </ul>
         </div>
-        <button
-          v-if="!questionChecked"
-          class="next-button check-button"
-          :disabled="currentAnswer == null"
-          v-on:click="submitAction"
-        >
-          Check
-        </button>
-        <button
-          v-if="questionChecked"
-          class="next-button"
-          :disabled="currentAnswer == null"
-          v-on:click="submitAction"
-        >
-          Continue
-        </button>
-      </div>
+      </section>
+      <section
+        v-if="questions[currentQuestion]"
+        class="status-section"
+        v-bind:class="{
+          'neutral-status': !questionChecked && questions[currentQuestion],
+          'correct-status':
+            questionCorrect === true && questions[currentQuestion],
+          'incorrect-status':
+            questionChecked && !questionCorrect && questions[currentQuestion]
+        }"
+      >
+        <div class="content">
+          <div class="answer-message">
+            <span v-if="questionChecked && questionCorrect">
+              Correct
+            </span>
+            <div
+              class="answer-message-incorrect"
+              v-if="questionChecked && !questionCorrect"
+            >
+              Incorrect
+              <div>Answer is: {{ questions[currentQuestion].answer }}</div>
+            </div>
+          </div>
+          <button
+            v-if="!questionChecked"
+            class="next-button check-button"
+            :disabled="currentAnswer == null"
+            v-on:click="submitAction"
+          >
+            Check
+          </button>
+          <button
+            v-if="questionChecked"
+            class="next-button"
+            :disabled="currentAnswer == null"
+            v-on:click="submitAction"
+          >
+            Continue
+          </button>
+        </div>
+      </section>
     </section>
   </div>
 </template>

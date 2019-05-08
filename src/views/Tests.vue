@@ -1,34 +1,31 @@
 <template>
   <div class="tests">
     <table v-if="user" class="tests">
-      <tbody class="table-header">
+      <thead class="table-header">
         <tr>
-          <th>
-            Test
-          </th>
+          <th>Test</th>
           <th>Date</th>
           <th>Results</th>
           <th>Score</th>
         </tr>
-      </tbody>
-      <tbody>
-        <tr v-for="(test, index) in tests" v-bind:key="test.dateToken">
+      </thead>
+      <tbody class="results-table">
+        <tr
+          class="result-row"
+          v-for="(test, index) in tests"
+          v-bind:key="test.dateToken"
+          v-on:click="gotoResults(index)"
+        >
           <td>
-            {{ test.type }}
+            {{ test.type | testName }}
           </td>
           <td>
-            <router-link
-              :to="{ name: 'results', params: { testId: index } }"
-            >
+            <router-link :to="{ name: 'results', params: { testId: index } }">
               <a>{{ test.dateTaken | formatDate }}</a>
             </router-link>
           </td>
-          <td>
-            {{ test.stats.correct }} / {{ test.stats.total }}
-          </td>
-          <td>{{
-            (test.stats.correct / test.stats.total) | percent
-          }}</td>
+          <td>{{ test.stats.correct }} / {{ test.stats.total }}</td>
+          <td>{{ (test.stats.correct / test.stats.total) | percent }}</td>
         </tr>
       </tbody>
     </table>
@@ -60,6 +57,11 @@ export default {
       }
     }
   },
+  methods: {
+    gotoResults: function(index) {
+      this.$router.push({ name: "results", params: { testId: index } });
+    }
+  },
   mounted() {
     this.$store.dispatch("initTests");
   }
@@ -74,20 +76,36 @@ table.tests {
   border-radius: 6px;
   overflow: hidden;
   box-shadow: 0 0px 40px 0px rgba(37, 47, 60, 0.12);
+  display: block;
+  height: 100%;
 }
-table.tests .table-header tr {
+table.tests thead.table-header {
+  display: block;
+}
+table.tests thead.table-header tr {
   line-height: 2;
   text-align: left;
+  display: block;
 }
-table.tests .table-header tr th {
+table.tests thead.table-header tr th {
   padding: 16px;
   font-weight: 500;
   letter-spacing: -0.1ch;
+}
+table.tests tbody.results-table {
+  display: block;
+  overflow: auto;
+  height: 100%;
+  width: 100%;
 }
 table.tests tr {
   padding: 20px;
   line-height: 1.4;
   border-bottom: 1px solid #f2f2f2;
+  width: 100%;
+}
+table.tests tr.result-row {
+  cursor: pointer;
 }
 table.tests td {
   padding: 16px;
