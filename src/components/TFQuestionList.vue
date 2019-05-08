@@ -66,7 +66,7 @@
           v-if="!questionChecked"
           class="next-button check-button"
           :disabled="currentAnswer == null"
-          v-on:click="checkQuestion"
+          v-on:click="submitAction"
         >
           Check
         </button>
@@ -74,7 +74,7 @@
           v-if="questionChecked"
           class="next-button"
           :disabled="currentAnswer == null"
-          v-on:click="nextQuestion"
+          v-on:click="submitAction"
         >
           Continue
         </button>
@@ -101,7 +101,13 @@ export default {
     answers: state => state.currentTest.answers
   }),
   mounted() {
-    window.addEventListener("keypress", e => {
+    document.addEventListener("keyup", this.keyListener);
+  },
+  beforeDestroy() {
+    document.removeEventListener("keyup", this.keyListener);
+  },
+  methods: {
+    keyListener(e) {
       switch (e.keyCode) {
         case 49: // 1
         case 116: // t
@@ -117,9 +123,7 @@ export default {
           this.submitAction();
           break;
       }
-    });
-  },
-  methods: {
+    },
     ...mapActions(["recordAnswer"]),
     nextQuestion() {
       if (this.currentAnswer != null) {
@@ -141,6 +145,7 @@ export default {
     checkQuestion() {
       if (this.currentAnswer != null && !this.questionChecked) {
         this.questionChecked = true;
+
         if (this.questions[this.currentQuestion].answer == this.currentAnswer) {
           this.questionCorrect = true;
         } else {
@@ -153,7 +158,7 @@ export default {
         });
       }
     },
-    submitAction() {
+    async submitAction() {
       if (this.currentAnswer != null && this.questionChecked === true) {
         this.nextQuestion();
       } else {

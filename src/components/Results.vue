@@ -58,7 +58,8 @@ export default {
   mounted() {},
   computed: mapState({
     total() {
-      return this.test.questions.length;
+      if (this.test.questions) return this.test.questions.length;
+      return 0;
     },
     right() {
       let total = 0;

@@ -34,6 +34,11 @@
       <li v-if="!user" class="recessed">
         <a v-on:click="showSignup">Signup</a>
       </li>
+      <li v-if="user" class="recessed">
+        <router-link to="/tests">
+          <a>Past Results</a>
+        </router-link>
+      </li>
     </ul>
   </div>
 </template>

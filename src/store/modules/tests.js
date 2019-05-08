@@ -1,3 +1,7 @@
+import firebase from "firebase/app";
+import "firebase/firestore";
+import "firebase/auth";
+
 const LAST_TEST_KEY = "currentTest.lastTest";
 
 export default {
@@ -21,22 +25,33 @@ export default {
     }
   },
   mutations: {
-    INIT_TESTS(state) {
+    LOAD_TESTS(state, tests) {
+      state.tests = tests;
+    },
+    INIT_LAST_TEST(state) {
       const lastTest = localStorage.getItem(LAST_TEST_KEY);
       if (lastTest) {
         state.lastTest = JSON.parse(lastTest);
-      }
-      const tests = localStorage.getItem("tests");
-      if (tests) {
-        state.tests = JSON.parse(tests);
-      } else {
-        state.tests = [];
       }
     }
   },
   actions: {
     initTests(context) {
-      context.commit("INIT_TESTS");
+      context.commit("INIT_LAST_TEST");
+      const tests = localStorage.getItem("tests");
+      if (tests) {
+        context.commit("LOAD_TESTS", JSON.parse(tests));
+      }
+      firebase.auth().onAuthStateChanged(() => {
+        firebase
+          .firestore()
+          .collection("results")
+          .where("userId", "==", firebase.auth().currentUser.uid)
+          .get()
+          .then(function(result) {
+            context.commit("LOAD_TESTS", result.docs.map(a => a.data()));
+          });
+      });
     }
   }
 };

@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="the-app">
     <div class="row">
       <Sidebar />
       <Login v-if="showingLogin" />
@@ -45,7 +45,7 @@ body {
   position: relative;
   background: rgb(245, 247, 249);
 }
-#app {
+#the-app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

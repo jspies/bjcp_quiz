@@ -17,7 +17,6 @@ export default {
   },
   actions: {
     loadUser: context => {
-      console.log(firebase.auth().currentUser)
       context.commit("SIGNIN", firebase.auth().currentUser);
     },
     login: (context, userInfo) => {

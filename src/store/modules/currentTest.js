@@ -20,11 +20,15 @@ const LAST_TEST_KEY = "currentTest.lastTest";
 export default {
   state: {
     currentQuestion: 0,
+    thinking: false,
     questions: [],
     answers: [],
     lastTest: {}
   },
   mutations: {
+    SET_THINKING(state, value) {
+      state.thinking = value;
+    },
     STORE_LAST_TEST(state) {
       let test = {
         questions: state.questions,
@@ -105,6 +109,12 @@ export default {
           context.commit("LOAD_QUESTIONS", questions);
         });
     },
+    thinking(context) {
+      return context.commit("SET_THINKING", true);
+    },
+    doneThinking(context) {
+      context.commit("SET_THINKING", false);
+    },
     storeTest(context, test) {
       test.dateTaken = new Date();
 
@@ -128,12 +138,14 @@ export default {
 
       if (firebase.auth().currentUser) {
         test.userId = firebase.auth().currentUser.uid;
+        test.type = "process_test";
         firebase
           .firestore()
           .collection("results")
           .add(test)
           .then(function(docRef) {
-            console.log(docRef)
+            console.log(docRef);
+            // TODO: trigger saved
           });
       }
     }
