@@ -1,5 +1,6 @@
 <template>
   <div id="home">
+    <p class="info">Hone your beer knowledge.</p>
     <Practice />
   </div>
 </template>
@@ -14,3 +15,12 @@ export default {
   }
 };
 </script>
+
+<style>
+#home {
+  margin: 40px;
+}
+p.info {
+  font-size: 1.2em;
+}
+</style>

@@ -47,9 +47,13 @@ export default {
           .firestore()
           .collection("results")
           .where("userId", "==", firebase.auth().currentUser.uid)
+          .orderBy("dateTaken", "desc")
+          .limit(50)
           .get()
           .then(function(result) {
-            context.commit("LOAD_TESTS", result.docs.map(a => a.data()));
+            const newTests = result.docs.map(a => a.data());
+            localStorage.setItem("tests", JSON.stringify(newTests));
+            context.commit("LOAD_TESTS", newTests);
           });
       });
     }

@@ -121,14 +121,11 @@ export default {
       let stats = {
         total: test.questions.length,
         correct: test.answers.reduce((accumulator, a) => {
-          if (typeof accumulator === "object") {
-            accumulator = 0;
-          }
           if (a.correct) {
-            accumulator += 1;
+            return accumulator + 1;
           }
           return accumulator;
-        })
+        }, 0)
       };
       test.stats = stats;
 

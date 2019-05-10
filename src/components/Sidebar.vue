@@ -1,10 +1,12 @@
 <template>
   <div class="sidebar">
     <div v-if="user" id="user-mark">{{ user.email }}</div>
-    <h1>
-      <img src="/img/icons/beer-sprite.png" />
-      Beer Study
-    </h1>
+    <router-link to="/">
+      <h1>
+        <img src="/img/icons/beer-sprite.png" />
+        Beer Study
+      </h1>
+    </router-link>
     <ul class="nav">
       <li class="sub">
         <ul>
@@ -67,7 +69,7 @@ export default {
 
 <style scoped>
 #user-mark {
-  position: absolute;
+  position: fixed;
   top: 0px;
   right: 0px;
   color: rgb(37, 47, 61);

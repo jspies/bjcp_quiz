@@ -25,8 +25,10 @@ export default {
 </script>
 
 <style>
-.main-page-list {
+ul.main-page-list {
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 .main-page-list li {
   padding: 20px;

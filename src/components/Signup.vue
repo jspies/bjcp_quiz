@@ -31,7 +31,7 @@ export default {
         email: this.email,
         password: this.password
       })
-      .then(function(resp) {
+      .then(resp => {
         this.$store.dispatch("toggleSignup");
       });
     }

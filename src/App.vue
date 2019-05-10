@@ -76,7 +76,6 @@ body {
   flex: 1 0 0;
 }
 h3 {
-  margin-left: 20px;
   letter-spacing: -0.1ch;
   font-size: 1.3em;
 }

@@ -4,20 +4,19 @@
       No test specified
     </div>
     <div v-if="test">
-      <div class="stats">
-        <div>{{ right }} / {{ total }}</div>
-        <div>{{ (right / total) | percent }}</div>
-      </div>
-      <div
-        class="result-line"
-        v-bind:key="answer.questionIndex"
-        v-for="answer in test.answers"
-        v-bind:class="{
-          correct: answer.correct,
-          incorrect: !answer.correct
-        }"
-      >
-        <div>
+      <section class="results-meta">
+        Results for <em>{{ test.type | testName }}</em> taken on <em>{{ test.dateTaken | formatDate }}</em>
+      </section>
+      <section class="result-lines">
+        <div
+          class="result-line"
+          v-bind:key="answer.questionIndex"
+          v-for="answer in test.answers"
+          v-bind:class="{
+            correct: answer.correct,
+            incorrect: !answer.correct
+          }"
+        >
           <div class="number">
             {{ answer.questionIndex + 1 }}
           </div>
@@ -44,6 +43,10 @@
             </div>
           </div>
         </div>
+      </section>
+      <div class="stats">
+        <div>{{ (right / total) | percent }}</div>
+        <div>{{ right }} / {{ total }}</div>
       </div>
     </div>
   </div>
@@ -75,11 +78,33 @@ export default {
 
 <style>
 .results {
-  margin: 30px auto 0 auto;
-  max-width: 40%;
+  padding: 40px;
+}
+.results-meta {
+  padding: 20px 20px 20px 0;
+  font-weight: 500;
+}
+.results-meta em {
+  font-weight: 800;
+  font-size: 1.3em;
+  color: rgba(37, 47, 61, 1.0)
 }
 .stats {
-  margin-bottom: 40px;
+  width: 20%;
+  float: left;
+  margin-left: 40px;
+  padding: 20px 10px;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  background: #fff;
+  line-height: 2;
+  text-align: center;
+  font-size: 1.4em;
+  box-shadow: 0 0px 40px 0px rgba(37, 47, 61, 0.12);
+}
+.result-lines {
+  width: 60%;
+  float: left;
 }
 .result-line {
   padding: 20px 10px;
@@ -91,6 +116,9 @@ export default {
 }
 .correct {
   background: lightgreen;
+}
+.incorrect {
+  box-shadow: 0 0px 40px 0px rgba(37, 47, 61, 0.12);
 }
 .correct .number {
   color: green;

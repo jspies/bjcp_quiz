@@ -1,7 +1,7 @@
 <template>
   <div class="question-list">
     <div class="loading" v-if="questions.length <= 0">
-      Loading
+      <img src="/img/icons/bigbeer.gif" />
     </div>
     <section v-if="questions.length > 0">
       <div class="progress">
@@ -188,6 +188,9 @@ export default {
 }
 .progress {
   margin: 40px 0 20px 0;
+}
+.loading {
+  margin-top: 200px;
 }
 .status-section button {
   display: inline-block;

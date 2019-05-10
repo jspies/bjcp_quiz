@@ -3,10 +3,10 @@
     <table v-if="user" class="tests">
       <thead class="table-header">
         <tr>
-          <th>Test</th>
-          <th>Date</th>
-          <th>Results</th>
-          <th>Score</th>
+          <th class="col col1">Test</th>
+          <th class="col col2">Date</th>
+          <th class="col col3">Results</th>
+          <th class="col col4">Score</th>
         </tr>
       </thead>
       <tbody class="results-table">
@@ -16,16 +16,20 @@
           v-bind:key="test.dateToken"
           v-on:click="gotoResults(index)"
         >
-          <td>
+          <td class="col col1">
             {{ test.type | testName }}
           </td>
-          <td>
+          <td class="col col2">
             <router-link :to="{ name: 'results', params: { testId: index } }">
               <a>{{ test.dateTaken | formatDate }}</a>
             </router-link>
           </td>
-          <td>{{ test.stats.correct }} / {{ test.stats.total }}</td>
-          <td>{{ (test.stats.correct / test.stats.total) | percent }}</td>
+          <td class="col col3">
+            {{ test.stats.correct }} / {{ test.stats.total }}
+          </td>
+          <td class="col col4">
+            {{ (test.stats.correct / test.stats.total) | percent }}
+          </td>
         </tr>
       </tbody>
     </table>
@@ -37,7 +41,6 @@
 
 <script>
 import { mapState } from "vuex";
-import moment from "moment";
 
 export default {
   name: "tests",
@@ -47,16 +50,6 @@ export default {
       return this.$store.getters.getUser;
     }
   }),
-  filters: {
-    formatDate: function(value) {
-      if (value.seconds) {
-        return moment.unix(value.seconds).format("YYYY-MM-DD");
-      }
-      if (value) {
-        return moment(String(value)).format("YYYY-MM-DD");
-      }
-    }
-  },
   methods: {
     gotoResults: function(index) {
       this.$router.push({ name: "results", params: { testId: index } });
@@ -78,14 +71,16 @@ table.tests {
   box-shadow: 0 0px 40px 0px rgba(37, 47, 60, 0.12);
   display: block;
   height: 100%;
+  table-layout: fixed;
 }
 table.tests thead.table-header {
-  display: block;
+  display: table;
+  width: 100%;
 }
 table.tests thead.table-header tr {
   line-height: 2;
   text-align: left;
-  display: block;
+  width: 100%;
 }
 table.tests thead.table-header tr th {
   padding: 16px;
@@ -100,12 +95,28 @@ table.tests tbody.results-table {
 }
 table.tests tr {
   padding: 20px;
+  display: table;
   line-height: 1.4;
   border-bottom: 1px solid #f2f2f2;
   width: 100%;
 }
 table.tests tr.result-row {
   cursor: pointer;
+}
+table.tests .col {
+  width: 25%;
+}
+table.tests .col.col1 {
+  width: 20%;
+}
+table.tests .col.col2 {
+  width: 20%;
+}
+table.tests .col.col3 {
+  width: 30%;
+}
+table.tests .col.col4 {
+  width: 30%;
 }
 table.tests td {
   padding: 16px;

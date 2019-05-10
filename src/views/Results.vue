@@ -1,12 +1,8 @@
 <template>
   <div class="results-page">
-    <Results v-bind:test="lastLocalTest" />
+    <Results v-bind:test="lastLocalTest" v-if="!$route.params.testId" />
     <div v-if="$route.params.testId">
       <Results v-bind:test="tests.tests[$route.params.testId]" />
-
-      <router-link :to="{ name: 'tests' }">
-        <a>Back to Tests</a>
-      </router-link>
     </div>
   </div>
 </template>
