@@ -1,6 +1,8 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
+import firebase from "firebase/app";
+import "firebase/auth";
 
 Vue.use(Router);
 
@@ -38,6 +40,18 @@ export default new Router({
       name: "results",
       component: () =>
         import(/* webpackChunkName: "results" */ "./views/Results.vue")
+    },
+    {
+      path: "/logout",
+      name: "logout",
+      beforeEnter: (to, from, next) => {
+        firebase
+          .auth()
+          .signOut()
+          .then(() => {
+            next("home");
+          });
+      }
     }
   ]
 });

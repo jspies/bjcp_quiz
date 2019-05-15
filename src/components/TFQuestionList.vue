@@ -13,30 +13,17 @@
             {{ questions[currentQuestion].question }}
           </div>
           <ul class="answer-choices">
-            <li class="answer">
-              <label for="questionAnswer1">
+            <li class="answer" v-bind:key="answer" v-for="(answer, index) in questions[currentQuestion].answer_choices">
+              <label :for="`questionAnswer${index}`">
                 <input
-                  id="questionAnswer1"
+                  :id="`questionAnswer${index}`"
                   name="questionAnswer"
                   type="radio"
-                  value="true"
+                  :value="answer"
                   :disabled="questionChecked"
                   v-model="currentAnswer"
                 />
-                <span>True</span>
-              </label>
-            </li>
-            <li class="answer">
-              <label for="questionAnswer2">
-                <input
-                  id="questionAnswer2"
-                  name="questionAnswer"
-                  type="radio"
-                  value="false"
-                  :disabled="questionChecked"
-                  v-model="currentAnswer"
-                />
-                <span>False</span>
+                <span>{{ answer }}</span>
               </label>
             </li>
           </ul>
@@ -184,7 +171,8 @@ export default {
   height: 80px;
   position: fixed;
   bottom: 0;
-  width: 100%;
+  right: 0;
+  left: 256px;
 }
 .progress {
   margin: 40px 0 20px 0;
@@ -213,6 +201,7 @@ export default {
   font-size: 2em;
   float: left;
   text-align: left;
+  margin-left: 80px;
 }
 .status-section .answer-message-incorrect {
   position: relative;
@@ -228,6 +217,7 @@ export default {
 }
 .next-button {
   float: right;
+  margin-right: 80px;
 }
 .correct-status {
   background: #b8f28b;
@@ -263,6 +253,7 @@ ul.answer-choices li {
   border-radius: 10px;
   padding: 10px 5px;
   display: inline-block;
+  text-transform: capitalize;
 }
 .answer label span {
   margin: 0 20px;

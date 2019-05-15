@@ -122,6 +122,7 @@ table.tests td {
   padding: 16px;
 }
 .empty {
-  margin: 30px 0 0 0;
+  margin: 40px 0 0 40px;
+  text-align: left;
 }
 </style>

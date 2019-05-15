@@ -41,6 +41,11 @@
           <a>Past Results</a>
         </router-link>
       </li>
+      <li v-if="user" class="recessed">
+        <router-link to="/logout">
+          <a>Logout</a>
+        </router-link>
+      </li>
     </ul>
   </div>
 </template>

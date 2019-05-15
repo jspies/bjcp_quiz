@@ -43,18 +43,20 @@ export default {
         context.commit("LOAD_TESTS", JSON.parse(tests));
       }
       firebase.auth().onAuthStateChanged(() => {
-        firebase
-          .firestore()
-          .collection("results")
-          .where("userId", "==", firebase.auth().currentUser.uid)
-          .orderBy("dateTaken", "desc")
-          .limit(50)
-          .get()
-          .then(function(result) {
-            const newTests = result.docs.map(a => a.data());
-            localStorage.setItem("tests", JSON.stringify(newTests));
-            context.commit("LOAD_TESTS", newTests);
-          });
+        if (firebase.auth().currentUser) {
+          firebase
+            .firestore()
+            .collection("results")
+            .where("userId", "==", firebase.auth().currentUser.uid)
+            .orderBy("dateTaken", "desc")
+            .limit(50)
+            .get()
+            .then(function(result) {
+              const newTests = result.docs.map(a => a.data());
+              localStorage.setItem("tests", JSON.stringify(newTests));
+              context.commit("LOAD_TESTS", newTests);
+            });
+        }
       });
     }
   }

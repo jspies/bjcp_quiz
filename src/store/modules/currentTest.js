@@ -87,7 +87,7 @@ export default {
       // see if there was not a previous test in progress
       if (state.questions.length === 0) {
         commit("CLEAR_STATE");
-        this.dispatch("fetchQuestions");
+        this.dispatch("fetchQuestions", 10);
       } else {
         // resume previous test, need to set current question to sync with actual results
         commit("SET_CURRENT_QUESTION", state.answers.length);
@@ -99,10 +99,10 @@ export default {
     recordAnswer: function(context, answer) {
       context.commit("RECORD_ANSWER", answer);
     },
-    fetchQuestions(context) {
+    fetchQuestions(context, number) {
       axios
         .get(
-          "https://us-central1-bjcp-aae7d.cloudfunctions.net/random?number=3"
+          `https://us-central1-bjcp-aae7d.cloudfunctions.net/random?number=${number}`
         )
         .then(function(result) {
           const questions = result.data.questions;
