@@ -19,7 +19,7 @@
             </router-link>
           </li>
           <li class="recessed">
-            <router-link to="/test">
+            <router-link to="/styleTest">
               <a>Start Style Quiz</a>
             </router-link>
           </li>

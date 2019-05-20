@@ -21,25 +21,21 @@
             {{ answer.questionIndex + 1 }}
           </div>
           {{ test.questions[answer.questionIndex].question }}
+          
           <div class="answer-display" v-if="!answer.correct">
             <div
+              v-bind:key="answerChoice"
+              v-for="answerChoice in test.questions[answer.questionIndex].answer_choices"
+              
               v-bind:class="{
                 'correct-answer':
-                  test.questions[answer.questionIndex].answer == 'true'
+                  test.questions[answer.questionIndex].answer == answerChoice
               }"
             >
-              True
-            </div>
-            <div
-              v-bind:class="{
-                'correct-answer':
-                  test.questions[answer.questionIndex].answer == 'false'
-              }"
-            >
-              <span class="lefted" v-if="answer.answer == 'false'">
+              <span class="lefted" v-if="test.questions[answer.questionIndex].answer == answerChoice">
                 -->
               </span>
-              False
+              {{ answerChoice }}
             </div>
           </div>
         </div>

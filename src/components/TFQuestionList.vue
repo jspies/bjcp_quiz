@@ -102,14 +102,22 @@ export default {
     keyListener(e) {
       switch (e.keyCode) {
         case 49: // 1
+          this.currentAnswer = this.questions[this.currentQuestion].answer_choices[0];
+          break;
         case 116: // t
         case 84: // T
-          this.currentAnswer = "true";
+          this.currentAnswer = this.questions[this.currentQuestion].answer_choices[0];
           break;
         case 50: // 2
         case 102: // f
         case 70: // F
-          this.currentAnswer = "false";
+          this.currentAnswer = this.questions[this.currentQuestion].answer_choices[1];
+          break;
+        case 51:
+          this.currentAnswer = this.questions[this.currentQuestion].answer_choices[2];
+          break;
+        case 52:
+          this.currentAnswer = this.questions[this.currentQuestion].answer_choices[3];
           break;
         case 13:
           this.submitAction();

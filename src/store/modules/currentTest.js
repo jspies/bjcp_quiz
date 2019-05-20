@@ -68,7 +68,7 @@ export default {
         state.currentQuestion = currentQuestion;
       }
       const questions = localStorage.getItem(QUESTIONS_KEY);
-      if (questions) {
+      if (questions && Array.isArray(questions)) {
         state.questions = JSON.parse(questions);
       } else {
         state.questions = [];
@@ -82,12 +82,15 @@ export default {
     }
   },
   actions: {
-    initTest({ commit, state }) {
+    initTest({ commit, state }, newTestType) {
       commit("LOAD");
       // see if there was not a previous test in progress
-      if (state.questions.length === 0) {
+      if (!state.questions || state.questions.length === 0) {
         commit("CLEAR_STATE");
-        this.dispatch("fetchQuestions", 10);
+        this.dispatch("fetchQuestions", {
+          numQuestions: 10,
+          newTestType
+        });
       } else {
         // resume previous test, need to set current question to sync with actual results
         commit("SET_CURRENT_QUESTION", state.answers.length);
@@ -99,10 +102,16 @@ export default {
     recordAnswer: function(context, answer) {
       context.commit("RECORD_ANSWER", answer);
     },
-    fetchQuestions(context, number) {
+    fetchQuestions(context, options) {
+      let url;
+      if (options.newTestType == "style") {
+        url = `https://us-central1-bjcp-aae7d.cloudfunctions.net/dynamicQuestion?number=${options.numQuestions}`;
+      } else {
+        url = `https://us-central1-bjcp-aae7d.cloudfunctions.net/random?number=${options.numQuestions}`;
+      }
       axios
         .get(
-          `https://us-central1-bjcp-aae7d.cloudfunctions.net/random?number=${number}`
+          url
         )
         .then(function(result) {
           const questions = result.data.questions;

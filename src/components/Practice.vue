@@ -3,16 +3,20 @@
     <h3>Practice</h3>
     <ul class="main-page-list">
       <li>
-        <router-link to="/tests">
-          <a>View Past Tests</a>
-        </router-link>
-      </li>
-      <li>
         <router-link to="/test">
           <a>Start BJCP Process Test</a>
         </router-link>
       </li>
-      <li>Start Style Test</li>
+      <li>
+        <router-link to="/styleTest">
+          <a>Start Style Test</a>
+        </router-link>
+      </li>
+      <li>
+        <router-link to="/tests">
+          <a>View Past Tests</a>
+        </router-link>
+      </li>
     </ul>
   </div>
 </template>
