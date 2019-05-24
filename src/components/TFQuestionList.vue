@@ -9,13 +9,19 @@
       </div>
       <section>
         <div v-if="questions[currentQuestion]">
-          <div class="question">
+          <div class="question" v-html="questions[currentQuestion].question">
             {{ questions[currentQuestion].question }}
           </div>
           <ul class="answer-choices">
-            <li class="answer" v-bind:key="answer" v-for="(answer, index) in questions[currentQuestion].answer_choices">
+            <li
+              class="answer"
+              v-bind:key="answer"
+              v-for="(answer, index) in questions[currentQuestion].answer_choices"
+              v-bind:class="{chosen: answer == currentAnswer}"
+            >
               <label :for="`questionAnswer${index}`">
                 <input
+                  class="answer-radio"
                   :id="`questionAnswer${index}`"
                   name="questionAnswer"
                   type="radio"
@@ -23,6 +29,9 @@
                   :disabled="questionChecked"
                   v-model="currentAnswer"
                 />
+                <div class="number-choice">
+                  {{ index + 1 }}
+                </div>
                 <span>{{ answer }}</span>
               </label>
             </li>
@@ -76,96 +85,110 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import { mapState, mapActions } from 'vuex';
 
-export default {
-  name: "tfquestionlist",
-  data: function() {
+@Component({
+  methods: {
+    ...mapActions(["recordAnswer"])
+  },
+  computed: mapState({
+    currentQuestion: state => state.currentTest.currentQuestion,
+    questions: state => state.currentTest.questions,
+    answers: state => state.currentTest.answers,
+    type: state => state.currentTest.type
+  })
+})
+export default class TFQuestionList extends Vue {
+  name = "tfquestionlist";
+
+  data() {
     return {
       questionCorrect: null,
       currentAnswer: null,
       questionChecked: false
     };
-  },
-  computed: mapState({
-    currentQuestion: state => state.currentTest.currentQuestion,
-    questions: state => state.currentTest.questions,
-    answers: state => state.currentTest.answers
-  }),
+  }
+
   mounted() {
     document.addEventListener("keyup", this.keyListener);
-  },
+  }
+
   beforeDestroy() {
     document.removeEventListener("keyup", this.keyListener);
-  },
-  methods: {
-    keyListener(e) {
-      switch (e.keyCode) {
-        case 49: // 1
-          this.currentAnswer = this.questions[this.currentQuestion].answer_choices[0];
-          break;
-        case 116: // t
-        case 84: // T
-          this.currentAnswer = this.questions[this.currentQuestion].answer_choices[0];
-          break;
-        case 50: // 2
-        case 102: // f
-        case 70: // F
-          this.currentAnswer = this.questions[this.currentQuestion].answer_choices[1];
-          break;
-        case 51:
-          this.currentAnswer = this.questions[this.currentQuestion].answer_choices[2];
-          break;
-        case 52:
-          this.currentAnswer = this.questions[this.currentQuestion].answer_choices[3];
-          break;
-        case 13:
-          this.submitAction();
-          break;
-      }
-    },
-    ...mapActions(["recordAnswer"]),
-    nextQuestion() {
-      if (this.currentAnswer != null) {
-        this.$store.dispatch("nextQuestion");
-        this.questionCorrect = null;
-        this.questionChecked = null;
-        this.currentAnswer = null;
+  }
 
-        // end of test
-        if (this.currentQuestion >= this.questions.length) {
-          this.$store.dispatch("storeTest", {
-            questions: this.questions,
-            answers: this.answers
-          });
-          this.$router.push("/results");
-        }
-      }
-    },
-    checkQuestion() {
-      if (this.currentAnswer != null && !this.questionChecked) {
-        this.questionChecked = true;
+  keyListener(e) {
+    switch (e.keyCode) {
+      case 49: // 1
+        this.currentAnswer = this.questions[this.currentQuestion].answer_choices[0];
+        break;
+      case 116: // t
+      case 84: // T
+        this.currentAnswer = this.questions[this.currentQuestion].answer_choices[0];
+        break;
+      case 50: // 2
+      case 102: // f
+      case 70: // F
+        this.currentAnswer = this.questions[this.currentQuestion].answer_choices[1];
+        break;
+      case 51:
+        this.currentAnswer = this.questions[this.currentQuestion].answer_choices[2];
+        break;
+      case 52:
+        this.currentAnswer = this.questions[this.currentQuestion].answer_choices[3];
+        break;
+      case 13:
+        this.submitAction();
+        break;
+    }
+  }
 
-        if (this.questions[this.currentQuestion].answer == this.currentAnswer) {
-          this.questionCorrect = true;
-        } else {
-          this.questionCorrect = false;
-        }
-        this.recordAnswer({
-          correct: this.questionCorrect,
-          questionIndex: this.currentQuestion,
-          answer: this.currentAnswer
+  nextQuestion() {
+    if (this.currentAnswer != null) {
+      this.$store.dispatch("nextQuestion");
+      this.questionCorrect = null;
+      this.questionChecked = null;
+      this.currentAnswer = null;
+
+      // end of test
+      if (this.currentQuestion >= this.questions.length) {
+        this.$store.dispatch("storeTest", {
+          questions: this.questions,
+          answers: this.answers,
+          type: this.type
         });
-      }
-    },
-    async submitAction() {
-      if (this.currentAnswer != null && this.questionChecked === true) {
-        this.nextQuestion();
-      } else {
-        this.checkQuestion();
+        this.$router.push("/results");
       }
     }
   }
+
+  checkQuestion() {
+    if (this.currentAnswer != null && !this.questionChecked) {
+      this.questionChecked = true;
+
+      if (this.questions[this.currentQuestion].answer == this.currentAnswer) {
+        this.questionCorrect = true;
+      } else {
+        this.questionCorrect = false;
+      }
+      this.recordAnswer({
+        correct: this.questionCorrect,
+        questionIndex: this.currentQuestion,
+        answer: this.currentAnswer
+      });
+    }
+  }
+
+  async submitAction() {
+    if (this.currentAnswer != null && this.questionChecked === true) {
+      this.nextQuestion();
+    } else {
+      this.checkQuestion();
+    }
+  }
+  
 };
 </script>
 
@@ -256,14 +279,34 @@ ul.answer-choices li {
   display: inline-block;
   margin: 20px;
 }
-.answer label {
+ul.answer-choices li.answer.chosen .number-choice {
+  border-color: #339cff;
+  background: #93cbff;
+}
+li.answer label {
   border: 1px solid #e5e5e5;
   border-radius: 10px;
   padding: 10px 5px;
   display: inline-block;
   text-transform: capitalize;
 }
-.answer label span {
+li.answer.chosen label {
+  border-color: #339cff;
+}
+li.answer label span {
   margin: 0 20px;
+  vertical-align: baseline;
+  line-height: 1.8;
+}
+.answer-radio {
+  opacity: 0;
+}
+ul.answer-choices li.answer .number-choice {
+  float: left;
+  border: 1px solid #e5e5e5;
+  border-radius: 2px;
+  padding: 3px 8px 2px 8px;
+  margin-left: 5px;
+  vertical-align: baseline;
 }
 </style>

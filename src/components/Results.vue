@@ -20,7 +20,9 @@
           <div class="number">
             {{ answer.questionIndex + 1 }}
           </div>
-          {{ test.questions[answer.questionIndex].question }}
+          <span v-html="test.questions[answer.questionIndex].question">
+            {{ test.questions[answer.questionIndex].question }}
+          </span>
           
           <div class="answer-display" v-if="!answer.correct">
             <div
@@ -32,9 +34,6 @@
                   test.questions[answer.questionIndex].answer == answerChoice
               }"
             >
-              <span class="lefted" v-if="test.questions[answer.questionIndex].answer == answerChoice">
-                -->
-              </span>
               {{ answerChoice }}
             </div>
           </div>
@@ -133,13 +132,14 @@ export default {
   margin: 10px auto;
 }
 .correct-answer {
-  color: green;
+  color: rgb(31, 167, 31);
+  border: 1px solid rgb(31, 167, 31);
+  border-radius: 4px;
+  padding: 3px 8px;
+  margin-left: -8px;
+  font-weight: 500;
 }
 .incorrect-answer {
   color: red;
-}
-.lefted {
-  display: inline-block;
-  margin-left: -25px;
 }
 </style>

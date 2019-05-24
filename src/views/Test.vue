@@ -13,7 +13,7 @@ export default {
     TFQuestionList
   },
   created() {
-    this.$store.dispatch("initTest");
+    this.$store.dispatch("initTest", "process_test");
   }
 };
 </script>

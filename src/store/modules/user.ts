@@ -1,25 +1,36 @@
 import firebase from "firebase/app";
 import "firebase/auth";
+import { ActionContext, Module } from 'vuex';
+
+interface UserState {
+  user: object
+}
+interface UserInfo {
+  email: string,
+  password: string
+}
+
+type UserContext = ActionContext<UserState, any>;
 
 export default {
   state: {
     user: null
   },
   getters: {
-    getUser: function(state) {
+    getUser: function(state: UserState) {
       return state.user;
     }
   },
   mutations: {
-    SIGNIN: function(state, user) {
+    SIGNIN: function(state: UserState, user: object) {
       state.user = user;
     }
   },
   actions: {
-    loadUser: context => {
+    loadUser: (context: UserContext) => {
       context.commit("SIGNIN", firebase.auth().currentUser);
     },
-    login: (context, userInfo) => {
+    login: (context: UserContext, userInfo: UserInfo) => {
       return firebase
         .auth()
         .signInWithEmailAndPassword(userInfo.email, userInfo.password)
@@ -28,8 +39,8 @@ export default {
           return resp;
         });
     },
-    signup: (context, userInfo) => {
-      return firebase
+    signup: function(context: UserContext, userInfo: UserInfo) {
+      firebase
         .auth()
         .createUserWithEmailAndPassword(userInfo.email, userInfo.password)
         .then(() => {

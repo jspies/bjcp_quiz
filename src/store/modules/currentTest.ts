@@ -17,50 +17,62 @@ const ANSWERS_KEY = "currentTest.answers";
 const QUESTIONS_KEY = "currentTest.questions";
 const LAST_TEST_KEY = "currentTest.lastTest";
 
+interface CurrentTestState {
+  currentQuestion: number,
+  thinking: boolean,
+  questions: Array<object>,
+  answers: Array<object>,
+  lastTest: object,
+  type: string
+}
+
 export default {
   state: {
     currentQuestion: 0,
     thinking: false,
     questions: [],
     answers: [],
-    lastTest: {}
+    lastTest: {},
+    type: ""
   },
   mutations: {
-    SET_THINKING(state, value) {
+    SET_THINKING(state: CurrentTestState, value: boolean) {
       state.thinking = value;
     },
-    STORE_LAST_TEST(state) {
+    STORE_LAST_TEST(state: CurrentTestState) {
       let test = {
         questions: state.questions,
         answers: state.answers,
-        dateTaken: new Date()
+        dateTaken: new Date(),
+        type: state.type
       };
       state.lastTest = test;
-      localStorage.setItem(LAST_TEST_KEY, JSON.stringify(test));
+      localStorage.setItem(LAST_TEST_KEY, JSON.stringify(state.lastTest));
     },
-    CLEAR_STATE(state) {
+    CLEAR_STATE(state: CurrentTestState) {
       state.currentQuestion = 0;
       state.answers = [];
-      localStorage.setItem(CURRENT_QUESTION_KEY, 0);
+      state.type = "";
+      localStorage.setItem(CURRENT_QUESTION_KEY, JSON.stringify(0));
       localStorage.setItem(ANSWERS_KEY, JSON.stringify(state.answers));
     },
-    LOAD_QUESTIONS(state, questions) {
+    LOAD_QUESTIONS(state: CurrentTestState, questions: Array<object>) {
       state.questions = questions;
       localStorage.setItem("currentTest.questions", JSON.stringify(questions));
     },
-    SET_CURRENT_QUESTION(state, num) {
+    SET_CURRENT_QUESTION(state: CurrentTestState, num: number) {
       state.currentQuestion = num;
       localStorage.setItem(CURRENT_QUESTION_KEY, num);
     },
-    INCREMENT_CURRENT_QUESTION(state) {
+    INCREMENT_CURRENT_QUESTION(state: CurrentTestState) {
       state.currentQuestion = state.currentQuestion + 1;
       localStorage.setItem(CURRENT_QUESTION_KEY, state.currentQuestion);
     },
-    RECORD_ANSWER: function(state, answer) {
+    RECORD_ANSWER: function(state: CurrentTestState, answer: object) {
       state.answers.push(answer);
       localStorage.setItem(ANSWERS_KEY, JSON.stringify(state.answers));
     },
-    LOAD: function(state) {
+    LOAD: function(state: CurrentTestState) {
       const currentQuestion = localStorage.getItem(CURRENT_QUESTION_KEY) || 0;
       if (typeof currentQuestion === "string") {
         state.currentQuestion = parseInt(currentQuestion);
@@ -79,18 +91,23 @@ export default {
       } else {
         state.answers = [];
       }
+    },
+    SET_TYPE: function(state: CurrentTestState, type: string) {
+      console.log("setting ", type)
+      state.type = type;
     }
   },
   actions: {
-    initTest({ commit, state }, newTestType) {
+    initTest({ commit, state }, newTestType: string) {
       commit("LOAD");
       // see if there was not a previous test in progress
       if (!state.questions || state.questions.length === 0) {
         commit("CLEAR_STATE");
         this.dispatch("fetchQuestions", {
-          numQuestions: 10,
+          numQuestions: 2,
           newTestType
         });
+        commit("SET_TYPE", newTestType);
       } else {
         // resume previous test, need to set current question to sync with actual results
         commit("SET_CURRENT_QUESTION", state.answers.length);
@@ -104,9 +121,9 @@ export default {
     },
     fetchQuestions(context, options) {
       let url;
-      if (options.newTestType == "style") {
+      if (options.newTestType == "style_test") {
         url = `https://us-central1-bjcp-aae7d.cloudfunctions.net/dynamicQuestion?number=${options.numQuestions}`;
-      } else {
+      } else { // process_test
         url = `https://us-central1-bjcp-aae7d.cloudfunctions.net/random?number=${options.numQuestions}`;
       }
       axios
@@ -144,13 +161,11 @@ export default {
 
       if (firebase.auth().currentUser) {
         test.userId = firebase.auth().currentUser.uid;
-        test.type = "process_test";
         firebase
           .firestore()
           .collection("results")
           .add(test)
           .then(function(docRef) {
-            console.log(docRef);
             // TODO: trigger saved
           });
       }
