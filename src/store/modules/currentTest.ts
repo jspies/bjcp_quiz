@@ -69,11 +69,11 @@ export default {
     },
     SET_CURRENT_QUESTION(state: CurrentTestState, num: number) {
       state.currentQuestion = num;
-      localStorage.setItem(CURRENT_QUESTION_KEY, num);
+      localStorage.setItem(CURRENT_QUESTION_KEY, JSON.stringify(num));
     },
     INCREMENT_CURRENT_QUESTION(state: CurrentTestState) {
       state.currentQuestion = state.currentQuestion + 1;
-      localStorage.setItem(CURRENT_QUESTION_KEY, state.currentQuestion);
+      localStorage.setItem(CURRENT_QUESTION_KEY, JSON.stringify(state.currentQuestion));
     },
     RECORD_ANSWER: function(state: CurrentTestState, answer: object) {
       state.answers.push(answer);

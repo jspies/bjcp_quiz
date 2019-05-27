@@ -41,9 +41,9 @@ export default class CustomQuiz extends Vue {
 
   go() {
     this.$router.push({ name: "custom", params: {
-      numQuestions: this.numQuestions,
-      includeProcess: this.includeProcess,
-      includeStyle: this.includeStyle
+      numQuestions: JSON.stringify(this.numQuestions),
+      includeProcess: JSON.stringify(this.includeProcess),
+      includeStyle: JSON.stringify(this.includeStyle)
     }});
     this.$store.dispatch("toggleCustom");
   }
