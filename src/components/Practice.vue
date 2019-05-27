@@ -3,9 +3,7 @@
     <h3>Practice</h3>
     <ul class="main-page-list">
       <li>
-        <router-link to="/customTest">
-          <a>Start Quiz</a>
-        </router-link>
+        <a v-on:click="showCustom" href="#">Start Quiz</a>
       </li>
       <li>
         <router-link to="/processTest">
@@ -29,7 +27,12 @@
 <script>
 export default {
   name: "Practice",
-  props: {}
+  props: {},
+  methods: {
+    showCustom: function() {
+      this.$store.dispatch("toggleCustom");
+    }
+  }
 };
 </script>
 
