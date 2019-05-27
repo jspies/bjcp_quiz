@@ -44,6 +44,7 @@ export default {
   display: block;
   width: 400px;
   max-width: 400px;
+  z-index: 100;
   background: #fff;
   border-bottom: 1px solid #e5e5e5;
   border-left: 1px solid #e5e5e5;

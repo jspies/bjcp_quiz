@@ -10,10 +10,13 @@ import TFQuestionList from "@/components/TFQuestionList.vue";
 export default {
   name: "process",
   components: {
-    TFQuestionList
+    TFQuestionList,
   },
   created() {
-    this.$store.dispatch("initTest", "process_test");
+    this.$store.dispatch("initTest", {
+      newTestType: "process_test",
+      numQuestions: 10
+    });
   }
 };
 </script>

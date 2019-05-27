@@ -14,9 +14,17 @@ export default {
   },
   created() {
     this.$store.dispatch("initTest", {
-      newTestType: "style_test",
-      numQuestions: 10
+      newTestType: "custom_test",
+      numQuestions: this.$route.params.numQuestions || 10,
+      includeProcess: this.$route.params.includeProcess,
+      includeStyle: this.$route.params.includeStyle
     });
   }
 };
 </script>
+
+<style>
+.quiz-options {
+  margin: 20px;
+}
+</style>

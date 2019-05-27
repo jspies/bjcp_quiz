@@ -14,7 +14,10 @@
             Practice
           </li>
           <li class="recessed">
-            <router-link to="/test">
+            <a v-on:click="showCustom">Take a Quiz</a>
+          </li>
+          <li class="recessed">
+            <router-link to="/processTest">
               <a>BJCP Process Quiz</a>
             </router-link>
           </li>
@@ -67,6 +70,9 @@ export default {
     },
     showSignup: function() {
       this.$store.dispatch("toggleSignup");
+    },
+    showCustom: function() {
+      this.$store.dispatch("toggleCustom");
     }
   }
 };

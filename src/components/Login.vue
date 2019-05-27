@@ -47,6 +47,7 @@ export default {
   border-left: 1px solid #e5e5e5;
   border-right: 1px solid #e5e5e5;
   padding: 20px;
+  z-index: 100;
 }
 .actions {
   margin: 10px auto;

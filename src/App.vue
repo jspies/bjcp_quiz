@@ -4,6 +4,7 @@
       <Sidebar />
       <Login v-if="showingLogin" />
       <Signup v-if="showingSignup" />
+      <CustomQuiz v-if="showingCustom" />
       <router-view class="main-content" />
     </div>
   </div>
@@ -14,16 +15,18 @@ import { mapState } from "vuex";
 import Sidebar from "@/components/Sidebar.vue";
 import Login from "@/components/Login.vue";
 import Signup from "@/components/Signup.vue";
+import CustomQuiz from "@/components/CustomQuiz.vue";
 
 export default {
   name: "app",
   components: {
     Sidebar,
     Login,
-    Signup
+    Signup,
+    CustomQuiz
   },
   computed: {
-    ...mapState(["showingLogin", "showingSignup"])
+    ...mapState(["showingLogin", "showingSignup", "showingCustom"])
   },
   mounted() {
     this.$store.dispatch("loadUser");

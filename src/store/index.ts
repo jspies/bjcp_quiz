@@ -16,7 +16,8 @@ export default new Vuex.Store({
   },
   state: {
     showingLogin: false,
-    showingSignup: false
+    showingSignup: false,
+    showingCustom: false
   },
   mutations: {
     TOGGLE_SIGNUP(state) {
@@ -26,10 +27,13 @@ export default new Vuex.Store({
       }
     },
     TOGGLE_LOGIN(state) {
-      state.showingLogin = ! state.showingLogin;
+      state.showingLogin = !state.showingLogin;
       if (state.showingLogin) {
         state.showingSignup = false;
       }
+    },
+    TOGGLE_CUSTOM(state) {
+      state.showingCustom = !state.showingCustom;
     }
   },
   actions: {
@@ -38,6 +42,9 @@ export default new Vuex.Store({
     },
     toggleSignup(context) {
       context.commit("TOGGLE_SIGNUP");
+    },
+    toggleCustom(context) {
+      context.commit("TOGGLE_CUSTOM");
     }
   }
 });

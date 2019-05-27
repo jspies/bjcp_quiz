@@ -26,6 +26,13 @@ interface CurrentTestState {
   type: string
 }
 
+interface TestOptions {
+  numQuestions: number,
+  newTestType: string,
+  includeProcess: boolean,
+  includeStyle: boolean
+}
+
 export default {
   state: {
     currentQuestion: 0,
@@ -93,21 +100,17 @@ export default {
       }
     },
     SET_TYPE: function(state: CurrentTestState, type: string) {
-      console.log("setting ", type)
       state.type = type;
     }
   },
   actions: {
-    initTest({ commit, state }, newTestType: string) {
+    initTest({ commit, state }, options: TestOptions) {
       commit("LOAD");
       // see if there was not a previous test in progress
       if (!state.questions || state.questions.length === 0) {
         commit("CLEAR_STATE");
-        this.dispatch("fetchQuestions", {
-          numQuestions: 2,
-          newTestType
-        });
-        commit("SET_TYPE", newTestType);
+        this.dispatch("fetchQuestions", options);
+        commit("SET_TYPE", options.newTestType);
       } else {
         // resume previous test, need to set current question to sync with actual results
         commit("SET_CURRENT_QUESTION", state.answers.length);
@@ -119,20 +122,65 @@ export default {
     recordAnswer: function(context, answer) {
       context.commit("RECORD_ANSWER", answer);
     },
-    fetchQuestions(context, options) {
-      let url;
-      if (options.newTestType == "style_test") {
-        url = `https://us-central1-bjcp-aae7d.cloudfunctions.net/dynamicQuestion?number=${options.numQuestions}`;
-      } else { // process_test
-        url = `https://us-central1-bjcp-aae7d.cloudfunctions.net/random?number=${options.numQuestions}`;
+    fetchQuestions(context, options: TestOptions) {
+
+      function shuffleArray(array: Array<any>) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
       }
+
+      let url;
+      let promises = [];
+      switch(options.newTestType) {
+        case "style_test":
+          url = `https://us-central1-bjcp-aae7d.cloudfunctions.net/dynamicQuestion?number=${options.numQuestions}`;
+          promises.push(axios.get(url));
+          break;
+        case "process_test":
+          url = `https://us-central1-bjcp-aae7d.cloudfunctions.net/random?number=${options.numQuestions}`;
+          promises.push(axios.get(url));
+          break;
+        default:
+
+          let diff;
+          if (options.includeProcess && options.includeStyle) {
+            diff = Math.floor(options.numQuestions / 2);
+          } else {
+            if (options.includeProcess) {
+              diff = 0;
+            } else {
+              diff = options.numQuestions;
+            }
+          }
+
+          if (options.includeStyle) {
+            url = `https://us-central1-bjcp-aae7d.cloudfunctions.net/dynamicQuestion?number=${diff}`;
+            promises.push(axios.get(url));
+          }
+          if (options.includeProcess) {
+            url = `https://us-central1-bjcp-aae7d.cloudfunctions.net/random?number=${options.numQuestions - diff}`;
+            promises.push(axios.get(url));
+          }
+      }
+      Promise
+        .all(promises)
+        .then(function(results) {
+          let questions = [];
+          results.map(r => {
+            questions = questions.concat(r.data.questions);
+          });
+          shuffleArray(questions);
+          context.commit("LOAD_QUESTIONS", questions);
+        })
       axios
         .get(
           url
         )
         .then(function(result) {
-          const questions = result.data.questions;
-          context.commit("LOAD_QUESTIONS", questions);
+          
+          
         });
     },
     thinking(context) {
