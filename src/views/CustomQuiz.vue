@@ -15,9 +15,9 @@ export default {
   created() {
     this.$store.dispatch("initTest", {
       newTestType: "custom_test",
-      numQuestions: this.$route.params.numQuestions || 10,
-      includeProcess: this.$route.params.includeProcess,
-      includeStyle: this.$route.params.includeStyle
+      numQuestions: JSON.parse(this.$route.params.numQuestions) || 10,
+      includeProcess: JSON.parse(this.$route.params.includeProcess),
+      includeStyle: JSON.parse(this.$route.params.includeStyle)
     });
   }
 };
