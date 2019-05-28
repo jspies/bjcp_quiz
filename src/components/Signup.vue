@@ -12,11 +12,15 @@
     <br />
     <div class="actions">
       <button v-on:click="signup">Signup</button>
+      <a href="#" v-on:click="googs">Login with Google</a>
     </div>
   </div>
 </template>
 
 <script>
+import firebase from "firebase/app";
+import "firebase/auth";
+
 export default {
   name: "signup",
   data() {
@@ -34,6 +38,23 @@ export default {
       .then(resp => {
         this.$store.dispatch("toggleSignup");
       });
+    },
+    googs: function() {
+      let provider = new firebase.auth.GoogleAuthProvider();
+      firebase
+        .auth()
+        .signInWithPopup(provider)
+        .then(result => {
+          if (result.user) {
+            this.$store.dispatch("showMessage", `Logged in as ${result.user.email}`);
+            this.$store.dispatch("toggleSignup");
+          }
+        })
+        .catch((err) => {
+          if (err.message) {
+            this.$store.dispatch("showMessage", err.message);
+          }
+        });
     }
   }
 };

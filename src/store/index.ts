@@ -15,6 +15,10 @@ export default new Vuex.Store({
     user: User
   },
   state: {
+    messageBar: {
+      show: false,
+      message: ""
+    },
     showingLogin: false,
     showingSignup: false,
     showingCustom: false
@@ -34,6 +38,10 @@ export default new Vuex.Store({
     },
     TOGGLE_CUSTOM(state) {
       state.showingCustom = !state.showingCustom;
+    },
+    SET_MESSAGE_SHOW(state, options) {
+      state.messageBar.show = options.show;
+      state.messageBar.message = options.message;
     }
   },
   actions: {
@@ -45,6 +53,24 @@ export default new Vuex.Store({
     },
     toggleCustom(context) {
       context.commit("TOGGLE_CUSTOM");
+    },
+    hideMessage(context) {
+      context.commit("SET_MESSAGE_SHOW", {
+        show: false,
+        message: ""
+      })
+    },
+    showMessage(context, msg) {
+      context.commit("SET_MESSAGE_SHOW", {
+        show: true,
+        message: msg
+      });
+      setTimeout(() => {
+        context.commit("SET_MESSAGE_SHOW", {
+          show: false,
+          message: ""
+        })
+      }, 3000);
     }
   }
 });

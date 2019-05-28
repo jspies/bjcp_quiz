@@ -213,8 +213,8 @@ export default {
           .firestore()
           .collection("results")
           .add(test)
-          .then(function(docRef) {
-            // TODO: trigger saved
+          .then((docRef) => {
+            this.dispatch("showMessage", "Results saved.");
           });
       }
     }

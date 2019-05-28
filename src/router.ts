@@ -62,7 +62,7 @@ export default new Router({
           .auth()
           .signOut()
           .then(() => {
-            next("home");
+            next("/");
           });
       }
     }

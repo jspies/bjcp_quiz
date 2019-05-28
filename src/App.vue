@@ -2,6 +2,7 @@
   <div id="the-app">
     <div class="row">
       <Sidebar />
+      <MessageBar />
       <Login v-if="showingLogin" />
       <Signup v-if="showingSignup" />
       <CustomQuiz v-if="showingCustom" />
@@ -12,7 +13,10 @@
 
 <script>
 import { mapState } from "vuex";
+import firebase from "firebase/app";
+import "firebase/auth";
 import Sidebar from "@/components/Sidebar.vue";
+import MessageBar from "@/components/MessageBar.vue";
 import Login from "@/components/Login.vue";
 import Signup from "@/components/Signup.vue";
 import CustomQuiz from "@/components/CustomQuiz.vue";
@@ -23,12 +27,13 @@ export default {
     Sidebar,
     Login,
     Signup,
+    MessageBar,
     CustomQuiz
   },
   computed: {
     ...mapState(["showingLogin", "showingSignup", "showingCustom"])
   },
-  mounted() {
+  mounted() {  
     this.$store.dispatch("loadUser");
   }
 };
