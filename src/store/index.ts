@@ -8,6 +8,16 @@ import User from "@/store/modules/user";
 
 Vue.use(Vuex);
 
+export interface RootState {
+  messageBar: {
+    show: boolean,
+    message: string
+  },
+  showingLogin: boolean,
+  showingSignup: boolean,
+  showingCustom: boolean
+}
+
 export default new Vuex.Store({
   modules: {
     currentTest: CurrentTest,
@@ -24,22 +34,22 @@ export default new Vuex.Store({
     showingCustom: false
   },
   mutations: {
-    TOGGLE_SIGNUP(state) {
+    TOGGLE_SIGNUP(state: RootState) {
       state.showingSignup = !state.showingSignup;
       if (state.showingSignup) {
         state.showingLogin = false;
       }
     },
-    TOGGLE_LOGIN(state) {
+    TOGGLE_LOGIN(state: RootState) {
       state.showingLogin = !state.showingLogin;
       if (state.showingLogin) {
         state.showingSignup = false;
       }
     },
-    TOGGLE_CUSTOM(state) {
+    TOGGLE_CUSTOM(state: RootState) {
       state.showingCustom = !state.showingCustom;
     },
-    SET_MESSAGE_SHOW(state, options) {
+    SET_MESSAGE_SHOW(state: RootState, options) {
       state.messageBar.show = options.show;
       state.messageBar.message = options.message;
     }

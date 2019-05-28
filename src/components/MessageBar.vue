@@ -9,11 +9,12 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { mapState } from 'vuex';
+import { RootState } from '@/store/';
 
 @Component({
   computed: mapState({
-    showMe: state => state.messageBar.show,
-    msg: state => state.messageBar.message
+    showMe: (state: RootState) => state.messageBar.show,
+    msg: (state: RootState) => state.messageBar.message
   })
 })
 export default class MessageBar extends Vue {
