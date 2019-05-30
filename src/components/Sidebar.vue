@@ -1,5 +1,6 @@
 <template>
-  <div class="sidebar">
+  <div class="sidebar" v-bind:class="{retractable: sidebarRetracts}">
+    <i class="fa-bars fas" v-bind:class="{retractable: sidebarRetracts}" v-on:click="toggleSidebar" id="sidebar-toggle"></i>
     <div v-if="user" id="user-mark">{{ user.email }}</div>
     <router-link to="/">
       <h1>
@@ -58,6 +59,11 @@ import { mapState } from "vuex";
 
 export default {
   name: "Sidebar",
+  data: function() {
+    return {
+      sidebarRetracts: true
+    }
+  },
   computed: {
     ...mapState(["banner"]),
     user: function() {
@@ -73,6 +79,9 @@ export default {
     },
     showCustom: function() {
       this.$store.dispatch("toggleCustom");
+    },
+    toggleSidebar: function() {
+      this.sidebarRetracts = !this.sidebarRetracts;
     }
   }
 };
@@ -83,6 +92,13 @@ export default {
   position: fixed;
   top: 0px;
   right: 0px;
+  color: rgb(37, 47, 61);
+}
+#sidebar-toggle {
+  position: relative;
+  top: 0px;
+  display: none;
+  left: 256px;
   color: rgb(37, 47, 61);
 }
 h1 {
@@ -149,5 +165,23 @@ h1 img {
 .sub {
   padding-bottom: 20px;
   background: rgb(25, 32, 43);
+}
+
+@media only screen and (max-width: 600px) {
+  .sidebar.retractable {
+    margin-left: -256px;
+  }
+  
+  #sidebar-toggle {
+    display: block;
+    height: 0;
+    color: white;
+    margin-left: -30px;
+    margin-top: 10px;
+  }
+  #sidebar-toggle.retractable {
+    margin-left: 10px;
+    color: #000;
+  }
 }
 </style>

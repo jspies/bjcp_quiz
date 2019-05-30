@@ -43,6 +43,12 @@ export default new Router({
         import(/* webpackChunkName: "tests" */ "./views/Tests.vue")
     },
     {
+      path: "/methods",
+      name: "methods",
+      component: () =>
+        import(/* webpackChunkName: "methods" */ "./views/Methods.vue")
+    },
+    {
       path: "/results",
       name: "currentResults",
       component: () =>
