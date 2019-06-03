@@ -20,6 +20,7 @@
     </div>
     <div class="option-row">
       <button @click="go">Start</button>
+      <button class="cancel" @click="close">Cancel</button>
     </div>
   </div>
 </template>
@@ -45,6 +46,10 @@ export default class CustomQuiz extends Vue {
       includeProcess: JSON.stringify(this.includeProcess),
       includeStyle: JSON.stringify(this.includeStyle)
     }});
+    this.$store.dispatch("toggleCustom");
+  }
+
+  close() {
     this.$store.dispatch("toggleCustom");
   }
 }
