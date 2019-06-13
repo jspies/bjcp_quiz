@@ -12,6 +12,7 @@
     <br />
     <div class="actions">
       <button v-on:click="signup">Signup</button>
+      <button @click="close" class="cancel">Cancel</button>
       <a href="#" v-on:click="googs">Login with Google</a>
     </div>
   </div>
@@ -38,6 +39,9 @@ export default {
       .then(resp => {
         this.$store.dispatch("toggleSignup");
       });
+    },
+    close: function() {
+      this.$store.dispatch("toggleSignup");
     },
     googs: function() {
       let provider = new firebase.auth.GoogleAuthProvider();

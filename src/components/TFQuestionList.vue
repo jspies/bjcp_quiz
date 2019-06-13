@@ -309,4 +309,9 @@ ul.answer-choices li.answer .number-choice {
   margin-left: 5px;
   vertical-align: baseline;
 }
+@media only screen and (max-width: 600px) {
+  .status-section {
+    left: 0;
+  }
+}
 </style>

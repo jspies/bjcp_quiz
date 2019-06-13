@@ -73,14 +73,18 @@ export default {
   methods: {
     showLogin: function() {
       this.$store.dispatch("toggleLogin");
+      this.sidebarRetracts = !this.sidebarRetracts;
     },
     showSignup: function() {
       this.$store.dispatch("toggleSignup");
+      this.sidebarRetracts = !this.sidebarRetracts;
     },
     showCustom: function() {
       this.$store.dispatch("toggleCustom");
+      this.sidebarRetracts = !this.sidebarRetracts;
     },
     toggleSidebar: function() {
+      console.log("toggling")
       this.sidebarRetracts = !this.sidebarRetracts;
     }
   }
@@ -99,7 +103,7 @@ export default {
   top: 0px;
   display: none;
   left: 256px;
-  color: rgb(37, 47, 61);
+  z-index: 1;
 }
 h1 {
   color: #fff;

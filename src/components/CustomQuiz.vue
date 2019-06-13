@@ -109,4 +109,10 @@ button {
   width: 100%;
   padding: 20px 0;
 }
+
+@media only screen and (max-width: 600px) {
+  .custom-quiz {
+    width: 100%;
+  }
+}
 </style>
